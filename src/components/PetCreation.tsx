@@ -37,13 +37,13 @@ export default function PetCreation() {
           <div className="p-2 bg-indigo-100 rounded-lg">
             <Sparkles className="w-6 h-6 text-indigo-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Create Your Companion</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Create Your Assistant Companion</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wider">
-              Pet Name
+              Assistant Name
             </label>
             <input
               type="text"

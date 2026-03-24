@@ -21,6 +21,7 @@ export default function PetDisplay() {
   const isHappy = pet.stats.happiness > 70;
   const isHungry = pet.stats.hunger < 30;
   const isTired = pet.stats.energy < 30;
+  const isLoyal = pet.stats.friendship > 80;
 
   return (
     <div className="relative group">
@@ -63,6 +64,14 @@ export default function PetDisplay() {
 
       {/* Status Indicators */}
       <div className="absolute -top-4 -right-4 flex flex-col gap-2">
+        {isLoyal && (
+          <motion.div 
+            initial={{ scale: 0 }} animate={{ scale: 1 }}
+            className="bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-lg uppercase"
+          >
+            Ready to Assist
+          </motion.div>
+        )}
         {isHungry && (
           <motion.div 
             initial={{ scale: 0 }} animate={{ scale: 1 }}

@@ -1,5 +1,5 @@
 import { useStore, Pet } from '../store';
-import { Utensils, Play, Brain, Sparkles } from 'lucide-react';
+import { Utensils, Play, Brain, Sparkles, Briefcase } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function Actions() {
@@ -34,13 +34,13 @@ export default function Actions() {
       xp: 50
     },
     { 
-      id: 'clean', 
-      label: 'Clean', 
-      icon: Sparkles, 
-      color: 'bg-blue-100 text-blue-600', 
-      hover: 'hover:bg-blue-200',
-      stats: { energy: 10, happiness: 5 },
-      xp: 10
+      id: 'assist', 
+      label: 'Assist', 
+      icon: Briefcase, 
+      color: 'bg-emerald-100 text-emerald-600', 
+      hover: 'hover:bg-emerald-200',
+      stats: { friendship: 15, intelligence: 5, energy: -10 },
+      xp: 40
     },
   ];
 

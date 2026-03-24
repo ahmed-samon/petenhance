@@ -6,6 +6,7 @@ import Chat from './Chat';
 import EventSystem from './EventSystem';
 import MiniGames from './MiniGames';
 import EvolutionModal from './EvolutionModal';
+import LiveAssistant from './LiveAssistant';
 import { motion } from 'motion/react';
 import { LogOut, Trophy } from 'lucide-react';
 import { auth, signOut } from '../firebase';
@@ -68,7 +69,7 @@ export default function Dashboard() {
             <div className="text-center mb-8">
               <h2 className="text-3xl font-black text-gray-900 mb-1">{pet.name}</h2>
               <p className="text-sm font-bold text-indigo-500 uppercase tracking-widest">
-                Level {pet.level} {pet.type}
+                Your Personal Assistant {pet.type}
               </p>
             </div>
 
@@ -91,6 +92,7 @@ export default function Dashboard() {
       <EventSystem />
       <MiniGames />
       <EvolutionModal />
+      <LiveAssistant />
     </div>
   );
 }

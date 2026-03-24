@@ -3,6 +3,7 @@ import { useStore } from './store';
 import Auth from './components/Auth';
 import PetCreation from './components/PetCreation';
 import Dashboard from './components/Dashboard';
+import EvolutionAnimation from './components/EvolutionAnimation';
 import { Loader2 } from 'lucide-react';
 
 export default function App() {
@@ -32,7 +33,12 @@ export default function App() {
   }
 
   if (pet) {
-    return <Dashboard />;
+    return (
+      <>
+        <Dashboard />
+        <EvolutionAnimation />
+      </>
+    );
   }
 
   return (

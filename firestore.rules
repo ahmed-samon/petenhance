@@ -31,31 +31,51 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == resource.data.userId;
     }
 
+    function isAdmin() {
+      return isAuthenticated() &&
+        ((exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+          (request.auth.token.email == "ahmed.samon@mpesafoundationacademy.ac.ke" && request.auth.token.email_verified == true));
+    }
+
     function isValidUser(data) {
       return data.keys().hasAll(['uid', 'email']) &&
              data.uid is string &&
-             data.email is string;
+             data.email is string &&
+             (!('displayName' in data) || data.displayName is string) &&
+             (!('hasIntroduced' in data) || data.hasIntroduced is bool) &&
+             (!('petId' in data) || data.petId is string || data.petId == null) &&
+             (!('xp' in data) || data.xp is int) &&
+             (!('level' in data) || data.level is int) &&
+             (!('coins' in data) || data.coins is int);
     }
 
     function isValidPet(data) {
       return data.keys().hasAll(['userId', 'type', 'name', 'stats']) &&
-             data.userId == request.auth.uid &&
+             // On create, userId must be the creator. On update, it must match the existing userId.
+             (data.userId == request.auth.uid || (resource != null && data.userId == resource.data.userId)) &&
              data.type in ['cat', 'dog', 'dragon', 'alien', 'slime'] &&
-             data.name is string && data.name.size() > 0 && data.name.size() < 30;
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.stats is map &&
+             data.stats.keys().hasAll(['happiness', 'hunger', 'energy', 'intelligence', 'friendship']) &&
+             (!('interactionCounts' in data) || (
+               data.interactionCounts is map &&
+               data.interactionCounts.keys().hasAll(['feed', 'play', 'train', 'clean', 'talk', 'assist'])
+             ));
     }
 
     // Rules
     match /users/{userId} {
-      allow read: if isOwner(userId);
+      allow read: if isOwner(userId) || isAdmin();
       allow create: if isOwner(userId) && isValidUser(request.resource.data);
-      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
     }
 
     match /pets/{petId} {
-      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid);
+      allow read: if (isAuthenticated() && (resource.data.userId == request.auth.uid)) || isAdmin();
       allow create: if isAuthenticated() && isValidPet(request.resource.data);
-      allow update: if isAuthenticated() && isDocOwner() && isValidPet(request.resource.data);
-      allow delete: if isAuthenticated() && isDocOwner();
+      allow update: if (isDocOwner() || isAdmin()) && isValidPet(request.resource.data);
+      allow delete: if isDocOwner() || isAdmin();
     }
 
     match /actions/{actionId} {

@@ -7,6 +7,8 @@
       "properties": {
         "uid": { "type": "string", "description": "Firebase Auth UID" },
         "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string", "description": "User's display name" },
+        "hasIntroduced": { "type": "boolean", "description": "Whether the user has introduced themselves to the pet" },
         "petId": { "type": "string", "description": "ID of the active pet" },
         "xp": { "type": "integer", "description": "Total experience points" },
         "level": { "type": "integer", "description": "User level" },
@@ -35,6 +37,17 @@
           }
         },
         "evolutionStage": { "type": "integer", "description": "0: Baby, 1: Teen, 2: Adult" },
+        "interactionCounts": {
+          "type": "object",
+          "properties": {
+            "feed": { "type": "integer" },
+            "play": { "type": "integer" },
+            "train": { "type": "integer" },
+            "clean": { "type": "integer" },
+            "talk": { "type": "integer" },
+            "assist": { "type": "integer" }
+          }
+        },
         "level": { "type": "integer" },
         "appearance": {
           "type": "object",

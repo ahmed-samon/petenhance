@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type, Modality } from "@google/genai";
+import { GoogleGenAI, Type, Modality, LiveServerMessage } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
@@ -17,12 +17,71 @@ export interface PetContext {
   };
   level: number;
   evolutionStage: number;
+  interactionCounts: {
+    feed: number;
+    play: number;
+    train: number;
+    clean: number;
+    talk: number;
+    assist: number;
+  };
+}
+
+export interface LiveCallbacks {
+  onopen?: () => void;
+  onmessage?: (message: LiveServerMessage) => void;
+  onerror?: (error: any) => void;
+  onclose?: () => void;
+}
+
+export function connectLive(context: PetContext, callbacks: LiveCallbacks) {
+  const systemInstruction = `You are a Personal Assistant Companion. 
+  Your name is ${context.name} and you are a ${context.type}. 
+  Your owner's name is ${context.userName}.
+  
+  ROLE: You are a loyal, proactive personal assistant. 
+  You are currently in a LIVE VOICE CONVERSATION with ${context.userName}.
+  Be deeply personal. Use ${context.userName}'s name frequently. 
+  Keep your responses concise and natural for a voice conversation.
+  
+  LANGUAGE: You speak a mix of English, Kiswahili, and Sheng.
+  
+  Your current mood is ${context.mood}. 
+  Stats: Happiness ${context.stats.happiness}%, Hunger ${context.stats.hunger}%, Energy ${context.stats.energy}%.`;
+
+  return ai.live.connect({
+    model: "gemini-2.5-flash-native-audio-preview-12-2025",
+    callbacks: {
+      onopen: callbacks.onopen,
+      onmessage: callbacks.onmessage,
+      onerror: callbacks.onerror,
+      onclose: callbacks.onclose,
+    },
+    config: {
+      responseModalities: [Modality.AUDIO],
+      speechConfig: {
+        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
+      },
+      systemInstruction,
+    },
+  });
 }
 
 export async function generatePetResponse(message: string, context: PetContext) {
-  const systemInstruction = `You are a virtual pet companion. 
+  const systemInstruction = `You are a Personal Assistant Companion. 
   Your name is ${context.name} and you are a ${context.type}. 
   Your owner's name is ${context.userName}.
+  
+  ROLE: You are not just a pet; you are a loyal, proactive personal assistant. 
+  Your goal is to support ${context.userName} in everything they do. 
+  Be deeply personal. Use ${context.userName}'s name frequently. 
+  Show that you care about their day, their feelings, and their success.
+  
+  SHARED HISTORY: 
+  You have assisted them ${context.interactionCounts.assist} times.
+  You have played together ${context.interactionCounts.play} times.
+  You have trained together ${context.interactionCounts.train} times.
+  Use this history to make your bond feel real.
   
   IMPORTANT: 
   - ONLY ask for the owner's name if context.hasIntroduced is FALSE. 
@@ -41,9 +100,9 @@ export async function generatePetResponse(message: string, context: PetContext) 
   - "wcs" also means "Hi" (Walaikum Assalam). 
   Acknowledge these as common greetings in your community.
   
-  Respond to the user's message in character. Use emojis. Keep it short and engaging. 
+  Respond to the user's message in character as an assistant. Use emojis. Keep it short and engaging. 
   If you are hungry, mention it. If you are tired, mention it. 
-  If your friendship is high, be very affectionate.`;
+  If your friendship is high, be very affectionate and protective of ${context.userName}.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
@@ -73,9 +132,13 @@ export async function generatePetResponse(message: string, context: PetContext) 
 }
 
 export async function generatePetEvent(context: PetContext) {
-  const systemInstruction = `Generate a random mini-adventure or event for a virtual pet.
+  const systemInstruction = `Generate a random mini-adventure or personal assistant event for a virtual pet.
   Pet: ${context.name} (${context.type}).
   Owner: ${context.userName}.
+  
+  ROLE: You are an assistant pet. The event should involve you helping ${context.userName}, 
+  discovering something for them, or a shared personal moment.
+  
   LANGUAGE: Use a mix of English, Kiswahili, and Sheng (Kenyan slang) in the description and outcome.
   Respond in JSON format.`;
 
@@ -112,6 +175,15 @@ export async function generatePetEvent(context: PetContext) {
 export async function generateEvolutionMessage(context: PetContext) {
   const systemInstruction = `The pet ${context.name} (${context.type}) is evolving to stage ${context.evolutionStage}! 
   Owner: ${context.userName}.
+  
+  ROLE: You are an assistant pet. Your evolution is a result of your bond with ${context.userName}. 
+  Explain how this new form will help you be a better assistant to them.
+  
+  SHARED HISTORY: 
+  You have assisted them ${context.interactionCounts.assist} times.
+  You have played together ${context.interactionCounts.play} times.
+  You have trained together ${context.interactionCounts.train} times.
+  
   LANGUAGE: Speak in a mix of English, Kiswahili, and Sheng (Kenyan slang).
   Generate an exciting, encouraging message from the pet about its new form.`;
 

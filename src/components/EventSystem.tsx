@@ -22,7 +22,8 @@ export default function EventSystem() {
         mood: 'Neutral',
         stats: pet.stats,
         level: pet.level,
-        evolutionStage: pet.evolutionStage
+        evolutionStage: pet.evolutionStage,
+        interactionCounts: pet.interactionCounts
       });
       setEvent(newEvent);
     } catch (error) {
@@ -34,7 +35,7 @@ export default function EventSystem() {
 
   const handleClose = () => {
     if (event) {
-      updatePetStats(event.statChanges, event.statChanges.xp || 0);
+      updatePetStats(event.statChanges, event.statChanges.xp || 0, 0, 'assist');
     }
     setEvent(null);
   };
@@ -44,10 +45,10 @@ export default function EventSystem() {
       <button
         onClick={triggerEvent}
         disabled={loading}
-        className="fixed bottom-8 right-8 bg-amber-500 hover:bg-amber-600 text-white p-4 rounded-full shadow-2xl transition-all flex items-center gap-2 z-50 group"
+        className="fixed bottom-8 right-8 bg-emerald-500 hover:bg-emerald-600 text-white p-4 rounded-full shadow-2xl transition-all flex items-center gap-2 z-50 group"
       >
         <Sparkles className={`w-6 h-6 ${loading ? 'animate-spin' : 'group-hover:rotate-12 transition-transform'}`} />
-        <span className="font-bold text-sm pr-2">Adventure</span>
+        <span className="font-bold text-sm pr-2">Assistant Task</span>
       </button>
 
       <AnimatePresence>
@@ -59,11 +60,11 @@ export default function EventSystem() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="bg-white rounded-[2.5rem] shadow-2xl max-w-lg w-full overflow-hidden relative"
             >
-              <div className="bg-amber-500 p-8 text-white relative overflow-hidden">
+              <div className="bg-emerald-500 p-8 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full translate-x-1/2 -translate-y-1/2" />
                 <Sparkles className="w-12 h-12 mb-4" />
                 <h2 className="text-3xl font-black mb-2">{event.title}</h2>
-                <p className="text-amber-100 font-medium leading-relaxed">{event.description}</p>
+                <p className="text-emerald-100 font-medium leading-relaxed">{event.description}</p>
               </div>
 
               <div className="p-8">

@@ -77,7 +77,8 @@ export default function Chat() {
         mood: pet.stats.happiness > 70 ? 'Happy' : pet.stats.hunger < 30 ? 'Hungry' : 'Neutral',
         stats: pet.stats,
         level: pet.level,
-        evolutionStage: pet.evolutionStage
+        evolutionStage: pet.evolutionStage,
+        interactionCounts: pet.interactionCounts
       });
 
       if (base64Audio) {
@@ -123,7 +124,8 @@ export default function Chat() {
         mood: pet.stats.happiness > 70 ? 'Happy' : pet.stats.hunger < 30 ? 'Hungry' : 'Neutral',
         stats: pet.stats,
         level: pet.level,
-        evolutionStage: pet.evolutionStage
+        evolutionStage: pet.evolutionStage,
+        interactionCounts: pet.interactionCounts
       });
 
       // Handle function calls
@@ -162,7 +164,7 @@ export default function Chat() {
           <div className="p-2 bg-indigo-100 rounded-lg">
             <Sparkles className="w-5 h-5 text-indigo-600" />
           </div>
-          <h3 className="font-bold text-gray-900">Pet Chat</h3>
+          <h3 className="font-bold text-gray-900">Assistant Chat</h3>
         </div>
       </div>
 
@@ -176,7 +178,7 @@ export default function Chat() {
               <MessageSquare className="w-8 h-8 text-gray-400" />
             </div>
             <p className="text-sm font-medium text-gray-500 italic">
-              Say hello to {pet?.name}! They love to chat.
+              {pet?.name} is ready to assist you. Ask them anything!
             </p>
           </div>
         )}

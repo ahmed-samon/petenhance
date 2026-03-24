@@ -52,11 +52,20 @@ export default function EvolutionModal() {
       mood: 'Excited',
       stats: pet.stats,
       level: profile.level,
-      evolutionStage: newStage
+      evolutionStage: newStage,
+      interactionCounts: pet.interactionCounts
     });
 
     setMessage(aiMsg);
     setEvolving(false);
+  };
+
+  const handleClose = () => {
+    if (pet && pet.evolutionPath) {
+      const { setEvolutionAnimation } = useStore.getState();
+      setEvolutionAnimation({ path: pet.evolutionPath, type: pet.type });
+    }
+    setShow(false);
   };
 
   return (
@@ -99,7 +108,7 @@ export default function EvolutionModal() {
                   "{message}"
                 </div>
                 <button
-                  onClick={() => setShow(false)}
+                  onClick={handleClose}
                   className="w-full bg-gray-900 hover:bg-black text-white font-bold py-5 rounded-3xl transition-all shadow-xl text-xl"
                 >
                   Continue Adventure

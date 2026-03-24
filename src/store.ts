@@ -22,6 +22,7 @@ export interface Pet {
     train: number;
     clean: number;
     talk: number;
+    assist: number;
   };
   level: number;
   appearance: {
@@ -49,6 +50,7 @@ interface AppState {
   pet: Pet | null;
   loading: boolean;
   initialized: boolean;
+  evolutionAnimation: { path: string; type: string } | null;
   setUser: (user: FirebaseUser | null) => void;
   setProfile: (profile: UserProfile | null) => void;
   setPet: (pet: Pet | null) => void;
@@ -57,6 +59,7 @@ interface AppState {
   evolvePet: (newStage: number, path: string) => Promise<string>;
   createPet: (name: string, type: Pet['type'], color: string) => Promise<void>;
   updateProfile: (changes: Partial<UserProfile>) => Promise<void>;
+  setEvolutionAnimation: (animation: { path: string; type: string } | null) => void;
 }
 
 let userUnsubscribe: (() => void) | null = null;
@@ -68,6 +71,7 @@ export const useStore = create<AppState>((set, get) => ({
   pet: null,
   loading: true,
   initialized: false,
+  evolutionAnimation: null,
 
   setUser: (user) => set({ user }),
   setProfile: (profile) => set({ profile }),
@@ -240,7 +244,8 @@ export const useStore = create<AppState>((set, get) => ({
         play: 0,
         train: 0,
         clean: 0,
-        talk: 0
+        talk: 0,
+        assist: 0
       },
       level: 1,
       appearance: {
@@ -269,6 +274,8 @@ export const useStore = create<AppState>((set, get) => ({
     } catch (error) {
       handleFirestoreError(error, OperationType.WRITE, `users/${user.uid}`);
     }
-  }
+  },
+
+  setEvolutionAnimation: (animation: { path: string; type: string } | null) => set({ evolutionAnimation: animation })
 }));
 
