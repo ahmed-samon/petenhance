@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user progress, currency, and pet reference.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "petId": { "type": "string", "description": "ID of the active pet" },
+        "xp": { "type": "integer", "description": "Total experience points" },
+        "level": { "type": "integer", "description": "User level" },
+        "coins": { "type": "integer", "description": "In-game currency" },
+        "achievements": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["uid", "email"]
+    },
+    "Pet": {
+      "title": "Virtual Pet",
+      "description": "The companion creature with stats and personality.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["cat", "dog", "dragon", "alien", "slime"] },
+        "name": { "type": "string" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "happiness": { "type": "integer" },
+            "hunger": { "type": "integer" },
+            "energy": { "type": "integer" },
+            "intelligence": { "type": "integer" },
+            "friendship": { "type": "integer" }
+          }
+        },
+        "evolutionStage": { "type": "integer", "description": "0: Baby, 1: Teen, 2: Adult" },
+        "level": { "type": "integer" },
+        "appearance": {
+          "type": "object",
+          "properties": {
+            "color": { "type": "string" },
+            "accessory": { "type": "string" }
+          }
+        },
+        "lastInteraction": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "name"]
+    },
+    "Action": {
+      "title": "Pet Interaction",
+      "description": "Logs of user actions like feeding or playing.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "type": { "type": "string", "enum": ["feed", "play", "train", "clean", "talk"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "xpGained": { "type": "integer" }
+      }
+    },
+    "AiLog": {
+      "title": "AI Conversation",
+      "description": "Chat history between user and pet.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "petId": { "type": "string" },
+        "message": { "type": "string" },
+        "response": { "type": "string" },
+        "mood": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/pets/{petId}": {
+      "schema": "Pet",
+      "description": "Pet data"
+    },
+    "/actions/{actionId}": {
+      "schema": "Action",
+      "description": "Interaction logs"
+    },
+    "/ai_logs/{logId}": {
+      "schema": "AiLog",
+      "description": "AI chat logs"
+    }
+  }
+}
